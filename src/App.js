@@ -1,25 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react'
+import './App.css'
+import axios from 'axios'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {advice: ''}
+    }
+
+    componentDidMount() {
+        this.fetchData()
+    }
+
+    fetchData = async () => {
+        const url = `https://api.adviceslip.com/advice`
+        try {
+            const response = await axios.get(url)
+            const { advice } = response.data.slip
+
+            this.setState({
+                advice: advice
+            })
+        }catch(error) {
+            console.log(error)
+        }
+    }
+
+    render() {
+        const { advice } = this.state
+        return (
+            <div className="app">
+                <div className="card">
+                    <h1 className="heading">{advice}</h1>
+                    <button className="button" onClick={this.fetchData} >
+                        <span>Get Advice!</span>
+                    </button>
+                </div>
+            </div>
+        )
+    }
 }
 
-export default App;
+export default App
